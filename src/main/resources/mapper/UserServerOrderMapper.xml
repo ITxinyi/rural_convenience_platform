@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.UserServerOrderMapper">
+  <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.UserServerOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="goods" jdbcType="VARCHAR" property="goods" />
+    <result column="begin_addr" jdbcType="VARCHAR" property="beginAddr" />
+    <result column="begin_addr_desc" jdbcType="VARCHAR" property="beginAddrDesc" />
+    <result column="begin_phone" jdbcType="VARCHAR" property="beginPhone" />
+    <result column="end_addr" jdbcType="VARCHAR" property="endAddr" />
+    <result column="end_addr_desc" jdbcType="VARCHAR" property="endAddrDesc" />
+    <result column="end_phone" jdbcType="VARCHAR" property="endPhone" />
+    <result column="distance" jdbcType="DOUBLE" property="distance" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="pay_state" jdbcType="INTEGER" property="payState" />
+  </resultMap>
+
+  <insert id="saveServerOrder" parameterType="map">
+    insert into user_server_order
+    (
+      user_id
+      ,type
+      ,goods
+      ,begin_addr
+      ,begin_addr_desc
+      ,begin_phone
+      ,end_addr
+      ,end_addr_desc
+      ,end_phone
+      ,distance
+      ,price
+      ,order_num
+      ,remarks
+      ,order_state
+      ,pay_state
+    ) values
+    (
+        #{userId},
+        #{type},
+        #{goods},
+        #{beginAddr},
+        #{beginAddrDesc},
+        #{beginPhone},
+        #{endAddr},
+        #{endAddrDesc},
+        #{endPhone},
+        #{distance},
+        #{price},
+        #{orderNumber},
+        #{remarks},
+        0,
+        0
+    )
+  </insert>
+
+    <select id="getServerOrderDtl" parameterType="map" resultMap="BaseResultMap">
+        select
+          id
+          ,user_id
+          ,type
+          ,goods
+          ,begin_addr
+          ,begin_addr_desc
+          ,begin_phone
+          ,end_addr
+          ,end_addr_desc
+          ,end_phone
+          ,distance
+          ,price
+          ,order_num
+          ,remarks
+          ,order_state
+          ,pay_state
+        from user_server_order
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="orderNum != null">
+                and order_num = #{orderNum}
+            </if>
+        </where>
+    </select>
+
+    <update id="updServerOrderState" parameterType="string">
+        update user_server_order set pay_state = 1 where order_num = #{orderNum}
+    </update>
+
+</mapper>

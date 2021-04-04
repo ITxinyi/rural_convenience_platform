@@ -1,0 +1,36 @@
+server:
+  port: 80
+
+logging:
+  file:
+    name: log/log.log
+
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/rural_convenience_platform?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false
+      username: root
+      password: 123456
+      initial-size: 1
+      min-idle: 1
+      max-active: 20
+      test-on-borrow: true
+      # MySQL 8.x: com.mysql.cj.jdbc.Driver
+      driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    database: 0
+    jedis:
+      pool:
+        max-idle: 6
+        max-active: 32
+        min-idle: 4
+        max-wait: 100
+      lettuce:
+        shutdown-timeout: 0
+
+mybatis:
+  type-aliases-package: com.gy.rural_convenience_platform.entity
+  mapper-locations: classpath:mapper/*.xml

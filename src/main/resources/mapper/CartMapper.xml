@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.CartMapper">
+    <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.Cart">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="quantity" property="quantity"/>
+        <association property="goods" column="gid" javaType="com.gy.rural_convenience_platform.entity.Goods">
+            <id column="gid" property="id"/>
+            <result column="goods_title" property="goodsTitle"/>
+            <result column="goods_desc" property="goodsDesc"/>
+            <result column="price" property="price"/>
+            <result column="inventory" property="inventory"/>
+            <association property="goodsImg" column="giid" javaType="com.gy.rural_convenience_platform.entity.GoodsImg">
+                <id column="giid" property="id"/>
+                <result column="img1" property="img1"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <select id="getByGoodsId" parameterType="cart" resultMap="BaseResultMap">
+        select * from cart where goods_id = #{goodsId} and user_id = #{userId}
+    </select>
+
+    <select id="getCarts" parameterType="int" resultMap="BaseResultMap">
+        select c.*,gi.id giid,gi.img1,g.id gid,g.goods_title,g.goods_desc,g.price,g.inventory from cart c left join goods g on c.goods_id = g.id left join goods_img gi on g.id = gi.goods_id where c.user_id = #{userId}
+    </select>
+
+    <select id="getCartCount" parameterType="int" resultType="int">
+        select COUNT(id) from cart where user_id = #{userId}
+    </select>
+
+    <select id="getCheckOutGoods" resultMap="BaseResultMap">
+        select c.*,g.id gid,g.goods_title,g.price,gi.id giid,gi.img1
+        from cart c left join goods g on c.goods_id = g.id
+        left join goods_img gi on g.id = gi.goods_id
+        where c.id in
+        <foreach collection="array" item="cartId" index="index" open="(" close=")" separator=",">
+            #{cartId}
+        </foreach>
+    </select>
+
+</mapper>

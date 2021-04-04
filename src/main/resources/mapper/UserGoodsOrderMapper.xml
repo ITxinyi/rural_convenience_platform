@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.UserGoodsOrderMapper">
+  <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.UserGoodsOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="addr_id" jdbcType="INTEGER" property="addrId" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="pay_price" jdbcType="DOUBLE" property="payPrice" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="order_date" jdbcType="VARCHAR" property="orderDate"/>
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="pay_state" jdbcType="INTEGER" property="payState" />
+    <collection property="orderGoods" ofType="com.gy.rural_convenience_platform.entity.OrderGoods">
+      <id column="id" property="id"/>
+      <result column="ugo_id" property="ugoId"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="quantity" property="quantity"/>
+    </collection>
+  </resultMap>
+
+  <resultMap id="Orders" type="com.gy.rural_convenience_platform.entity.UserGoodsOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="addr_id" jdbcType="INTEGER" property="addrId" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="pay_price" jdbcType="DOUBLE" property="payPrice" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="order_date" jdbcType="VARCHAR" property="orderDate"/>
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="pay_state" jdbcType="INTEGER" property="payState" />
+    <association property="goodsImg" column="giid" javaType="com.gy.rural_convenience_platform.entity.GoodsImg">
+      <id column="id" property="id"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="img1" property="img1"/>
+    </association>
+  </resultMap>
+
+  <resultMap id="OrderDetail" type="com.gy.rural_convenience_platform.entity.UserGoodsOrder">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="addr_id" jdbcType="INTEGER" property="addrId" />
+    <result column="order_num" jdbcType="VARCHAR" property="orderNum" />
+    <result column="pay_price" jdbcType="DOUBLE" property="payPrice" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="order_date" jdbcType="VARCHAR" property="orderDate"/>
+    <result column="order_state" jdbcType="INTEGER" property="orderState" />
+    <result column="pay_state" jdbcType="INTEGER" property="payState" />
+    <collection property="orderGoods" ofType="com.gy.rural_convenience_platform.entity.OrderGoods">
+      <id column="ogid" property="id"/>
+      <result column="ugo_id" property="ugoId"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="quantity" property="quantity"/>
+      <association property="goods" column="gid" javaType="com.gy.rural_convenience_platform.entity.Goods">
+        <id column="gid" property="id"/>
+        <result column="goods_title" property="goodsTitle"/>
+        <result column="price" property="price"/>
+        <association property="goodsImg" column="giid" javaType="com.gy.rural_convenience_platform.entity.GoodsImg">
+          <id column="giid" property="id"/>
+          <result column="img1" property="img1"/>
+        </association>
+      </association>
+    </collection>
+  </resultMap>
+
+  <select id="getOrderByUserIdAndGoodsId" parameterType="map" resultMap="BaseResultMap">
+    select ugo.*,og.id ogid,og.goods_id from user_goods_order ugo left join order_goods og on ugo.id = og.ugo_id where ugo.user_id = #{userId} and og.goods_id = #{goodsId}
+  </select>
+
+  <select id="getUserGoodsOrders" parameterType="int" resultMap="Orders">
+    select ugo.*,gi.* from user_goods_order ugo,goods_img gi where ugo.user_id = #{userId} and gi.id = (select goods_id from order_goods where ugo_id = ugo.id limit 1)
+  </select>
+
+  <select id="getOrderByOrderNum" parameterType="string" resultMap="BaseResultMap">
+    select * from user_goods_order where order_num = #{out_trade_no}
+  </select>
+
+  <select id="getOrderDetail" parameterType="map" resultMap="OrderDetail">
+    select ugo.*,og.id ogid,og.quantity,g.id gid,g.goods_title,g.price ,gi.id giid,gi.img1
+    from user_goods_order ugo
+    left join order_goods og on ugo.id = og.ugo_id
+    left join goods g on og.goods_id = g.id
+    left join goods_img gi on g.id = gi.goods_id
+    <where>
+      <if test="id != null">
+        and ugo.id = #{id}
+      </if>
+      <if test="orderNum != null">
+        and ugo.order_num = #{orderNum}
+      </if>
+    </where>
+  </select>
+
+  <delete id="delOrder" parameterType="int" >
+    delete from user_goods_order where id = #{orderId}
+  </delete>
+
+</mapper>

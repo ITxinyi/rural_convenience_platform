@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.IdcardImgMapper">
+  <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.IdcardImg">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="worker_id" jdbcType="INTEGER" property="workerId" />
+    <result column="id_img1" jdbcType="VARCHAR" property="idImg1" />
+    <result column="id_img2" jdbcType="VARCHAR" property="idImg2" />
+  </resultMap>
+</mapper>

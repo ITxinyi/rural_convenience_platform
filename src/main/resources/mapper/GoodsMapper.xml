@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.GoodsMapper">
+  <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.Goods">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_title" jdbcType="VARCHAR" property="goodsTitle" />
+    <result column="goods_desc" jdbcType="VARCHAR" property="goodsDesc" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="inventory" jdbcType="INTEGER" property="inventory" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <association property="goodsImg" column="gid" javaType="com.gy.rural_convenience_platform.entity.GoodsImg">
+      <id column="id" property="id"/>
+      <result column="goods_id" property="goodsId"/>
+      <result column="img1" property="img1"/>
+      <result column="img2" property="img2"/>
+      <result column="img3" property="img3"/>
+      <result column="img4" property="img4"/>
+    </association>
+  </resultMap>
+
+  <sql id="goods_where">
+    <where>
+      <if test="name != null and name != ''">
+        and goods_title like '%${name}%'
+      </if>
+    </where>
+  </sql>
+
+  <select id="goodsPage" parameterType="map" resultMap="BaseResultMap">
+    select g.*,gi.id gid,gi.goods_id,gi.img1,gi.img2,gi.img3,gi.img4 from goods g left join goods_img gi on g.id = gi.goods_id
+    <include refid="goods_where"></include>
+  </select>
+
+  <select id="goodsById" parameterType="Integer" resultMap="BaseResultMap">
+    select g.*,gi.id gid,gi.goods_id,gi.img1,gi.img2,gi.img3,gi.img4 from goods g left join goods_img gi on g.id = gi.goods_id
+     where g.id = #{id}
+  </select>
+
+  <select id="goodsRandByNum" parameterType="int" resultMap="BaseResultMap">
+    select g.*,gi.id giid,gi.goods_id,gi.img1,gi.img2,gi.img3,gi.img4 from goods g left join goods_img gi on g.id = gi.goods_id
+     WHERE g.id >= (SELECT floor(RAND() * (SELECT MAX(id) FROM goods ))) ORDER BY id LIMIT #{num};
+  </select>
+
+  <select id="getCheckOutGoods" resultMap="BaseResultMap">
+    select g.*,gi.id giid,gi.img1 from goods g LEFT JOIN goods_img gi on g.id = gi.goods_id
+    where g.id in
+    (select goods_id from cart where id in
+    <foreach collection="array" item="cartId" index="index" open="(" close=")" separator=",">
+      #{cartId}
+    </foreach>
+    )
+  </select>
+
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gy.rural_convenience_platform.mapper.GoodsEvaluateMapper">
+  <resultMap id="BaseResultMap" type="com.gy.rural_convenience_platform.entity.GoodsEvaluate">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="evaluate_date" jdbcType="VARCHAR" property="evaluateDate" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <association property="user" javaType="com.gy.rural_convenience_platform.entity.User" column="uid">
+      <id column="id" property="id"/>
+      <result column="username" property="username"/>
+      <result column="nickname" property="nickname"/>
+    </association>
+  </resultMap>
+
+  <select id="getEvaByUserId" parameterType="map" resultMap="BaseResultMap">
+    select * from goods_evaluate where user_id = #{userId} and goods_id = #{goodsId}
+  </select>
+
+  <select id="getComments" parameterType="int" resultMap="BaseResultMap">
+    select ge.*,u.id uid,u.username,u.nickname from goods_evaluate ge left join user u on ge.user_id = u.id where ge.goods_id = #{goods_id}
+  </select>
+
+</mapper>
