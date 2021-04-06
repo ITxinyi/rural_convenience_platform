@@ -26,7 +26,12 @@ public class UserService {
         System.out.println(_user + "_user");
         User user = userMapper.login(_user);
         System.out.println(user);
-        if(user != null){
+        if (user != null) {
+            Integer loginCount = Integer.valueOf(user.getLoginCount());
+            String isManage = user.getIsManage();
+            if ("1".equals(isManage) && loginCount < 1) {
+                return false;
+            }
             re.set(sessionId, user, 60 * 30);
             return true;
         }

@@ -8,13 +8,39 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    /*用户名*/
     private String username;
 
+    /*密码*/
     private String password;
 
+    /*昵称*/
     private String nickname;
 
+    /*账号状态：0正常，1封号，2注销*/
     private Integer state;
+
+    /*是否是管理员：0不是，1是*/
+    private String isManage;
+
+    /*登录次数*/
+    private String loginCount;
+
+    public String getIsManage() {
+        return isManage;
+    }
+
+    public void setIsManage(String isManage) {
+        this.isManage = isManage;
+    }
+
+    public String getLoginCount() {
+        return loginCount;
+    }
+
+    public void setLoginCount(String loginCount) {
+        this.loginCount = loginCount;
+    }
 
     /**
      * @return id

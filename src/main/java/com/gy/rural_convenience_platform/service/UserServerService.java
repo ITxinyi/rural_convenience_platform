@@ -54,6 +54,7 @@ public class UserServerService {
         if (user != null){
             map.put("userId", user.getId());
         }
+        map.put("isDel", 0);
         UserServerOrder[] serverOrder = userServerOrderMapper.getServerOrderDtl(map);
         return serverOrder;
     }
@@ -63,6 +64,7 @@ public class UserServerService {
         Map<String, Object> map = new HashMap<>();
         map.put("orderNum",orderNum);
         map.put("userId", user.getId());
+        map.put("isDel", 0);
         /*获取订单信息*/
         UserServerOrder[] orderDtl = userServerOrderMapper.getServerOrderDtl(map);
         UserServerOrder serverOrder = orderDtl[0];

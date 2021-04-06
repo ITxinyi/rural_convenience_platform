@@ -93,6 +93,17 @@ public class UserServerOrder {
     @Column(name = "pay_state")
     private Integer payState;
 
+    @Column(name = "is_del")
+    private String isDel;
+
+    public String getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(String isDel) {
+        this.isDel = isDel;
+    }
+
     /**
      * @return id
      */

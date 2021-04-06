@@ -21,6 +21,7 @@
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
     <result column="order_state" jdbcType="INTEGER" property="orderState" />
     <result column="pay_state" jdbcType="INTEGER" property="payState" />
+    <result column="is_del" jdbcType="INTEGER" property="isDel" />
   </resultMap>
 
   <insert id="saveServerOrder" parameterType="map">
@@ -41,6 +42,7 @@
       ,remarks
       ,order_state
       ,pay_state
+      ,is_del
     ) values
     (
         #{userId},
@@ -56,6 +58,7 @@
         #{price},
         #{orderNumber},
         #{remarks},
+        0,
         0,
         0
     )
@@ -79,8 +82,12 @@
           ,remarks
           ,order_state
           ,pay_state
+          ,is_del
         from user_server_order
         <where>
+            <if test="isDel != null">
+                and is_del = #{isDel}
+            </if>
             <if test="userId != null">
                 and user_id = #{userId}
             </if>

@@ -10,6 +10,8 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
     <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="is_manage" jdbcType="VARCHAR" property="isManage" />
+    <result column="login_count" jdbcType="VARCHAR" property="loginCount" />
   </resultMap>
 
   <select id="login" parameterType="user" resultMap="BaseResultMap">

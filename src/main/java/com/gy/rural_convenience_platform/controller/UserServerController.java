@@ -64,4 +64,12 @@ public class UserServerController {
         userServerService.toServerPay(orderNum,user,response);
     }
 
+    @GetMapping("/getServerOrders")
+    public Map<String, Object> getServerOrders(HttpServletRequest request){
+        User user = currentUser.currentUser(request);
+        if(user == null) return ResponseCode.error("用户未登录");
+        UserServerOrder[] serverOrders = userServerService.getServerOrderDtl(null, user);
+        return ResponseCode.ok(serverOrders);
+    }
+
 }
