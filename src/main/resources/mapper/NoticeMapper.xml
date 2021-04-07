@@ -10,5 +10,33 @@
     <result column="notice_date" jdbcType="VARCHAR" property="noticeDate" />
     <result column="img" jdbcType="VARCHAR" property="img" />
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <result column="is_del" jdbcType="VARCHAR" property="isDel" />
+    <result column="create_per" jdbcType="VARCHAR" property="createPer" />
   </resultMap>
+
+  <insert id="addNotice" parameterType="map">
+    INSERT INTO notice ( title, content, notice_date, img, is_del, create_per )
+    VALUES(#{title},#{content},CURRENT_TIMESTAMP,#{url},0,#{username})
+  </insert>
+
+  <select id="getNoticePage" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+        id,
+        title,
+        content,
+        notice_date,
+        img,
+        is_del,
+        create_per
+    FROM
+        notice
+    <where>
+        <if test="title != null">
+            and title like '%${title}%'
+        </if>
+    </where>
+    ORDER BY
+        notice_date DESC
+  </select>
+
 </mapper>

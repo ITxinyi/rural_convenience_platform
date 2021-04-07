@@ -34,3 +34,10 @@ spring:
 mybatis:
   type-aliases-package: com.gy.rural_convenience_platform.entity
   mapper-locations: classpath:mapper/*.xml
+
+cos:
+  appId: 1304142110
+  secretId: AKIDe3Ej010DUVKez6fayEH7jMltkK5eaLfl
+  secretKey: xecKp8DF2a4EaiZ9ZieKh6sSljRu8fOF
+  bucketName: rural-1-1304142110
+  domainName: https://rural-1-1304142110.cos.ap-shanghai.myqcloud.com

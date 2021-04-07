@@ -24,6 +24,7 @@ public class UserController {
     @Autowired
     private CurrentUser currentUser;
 
+    /*用户注册*/
     @RequestMapping("/register")
     public Map<String, Object> register(String nickname, String username, String password, String verCode) {
         if (verCode != null && verCode.equals(re.get(verCode))) {
@@ -38,16 +39,17 @@ public class UserController {
         return ResponseCode.error("验证码错误");
     }
 
+    /*用户登录*/
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public Map<String, Object> login(String username, String password, HttpServletRequest request) {
+    public Map<String, Object> login(String username, String password,String loginflag, HttpServletRequest request) {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
-        boolean result = userService.login(user, request.getSession().getId());
-        if (result) return ResponseCode.ok(result);
-        return ResponseCode.ok("用户名或密码错误");
+        Map<String, Object> loginResult = userService.login(user, request.getSession().getId(),loginflag);
+        return loginResult;
     }
 
+    /*当前登录用户*/
     @RequestMapping("/currentUser")
     public Map<String, Object> currentUser(HttpServletRequest request) {
         String sessionId = request.getSession().getId();
@@ -60,6 +62,7 @@ public class UserController {
         return ResponseCode.error("用户未登录");
     }
 
+    /*密码修改*/
     @RequestMapping("/updateUser")
     public Map<String, Object> updateUser(String nickName, String oldPwd, String newPwd, HttpServletRequest request) {
         User user = currentUser.currentUser(request);
@@ -70,6 +73,7 @@ public class UserController {
         return ResponseCode.ok(false);
     }
 
+    /*登录注销*/
     @RequestMapping("/logout")
     public Map<String,Object> logout(HttpServletRequest request){
         currentUser.logout(request);

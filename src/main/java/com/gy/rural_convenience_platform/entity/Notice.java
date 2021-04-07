@@ -29,6 +29,27 @@ public class Notice {
      */
     private String content;
 
+    /*是否删除*/
+    private String isDel;
+    /*创建人*/
+    private String createPer;
+
+    public String getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(String isDel) {
+        this.isDel = isDel;
+    }
+
+    public String getCreatePer() {
+        return createPer;
+    }
+
+    public void setCreatePer(String createPer) {
+        this.createPer = createPer;
+    }
+
     /**
      * @return id
      */
