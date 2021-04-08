@@ -39,4 +39,27 @@
         notice_date DESC
   </select>
 
+    <update id="stopNotice" parameterType="string">
+        update notice set is_del = '1' where id = #{id}
+    </update>
+
+    <select id="getNotice" parameterType="string" resultMap="BaseResultMap">
+        select
+            id,
+            title,
+            content,
+            notice_date,
+            img,
+            is_del,
+            create_per
+        from notice
+        where id = #{id}
+    </select>
+
+    <update id="saveNotice" parameterType="map">
+        update notice
+        set title = #{title},content = #{content},notice_date = CURRENT_TIMESTAMP,img = #{img},create_per = #{username}
+        where id = #{id}
+    </update>
+
 </mapper>

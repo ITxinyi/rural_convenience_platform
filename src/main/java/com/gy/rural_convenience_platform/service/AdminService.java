@@ -54,4 +54,40 @@ public class AdminService {
         return noticePageInfo;
 
     }
+
+    /**
+     * 停止公告
+     *
+     * @param id
+     * @return
+     */
+    public Integer stopNotice(String id) {
+
+        Integer result = noticeMapper.stopNotice(id);
+        return result;
+    }
+
+    /**
+     * 查询公告
+     *
+     * @param id
+     * @return
+     */
+    public Notice getNotice(String id) {
+
+        Notice notice = noticeMapper.getNotice(id);
+        return notice;
+    }
+
+    /**
+     * 保存编辑信息
+     *
+     * @param map
+     * @return
+     */
+    public boolean saveNotice(Map map) {
+        Integer result = noticeMapper.saveNotice(map);
+        if (result > 0) return true;
+        return false;
+    }
 }

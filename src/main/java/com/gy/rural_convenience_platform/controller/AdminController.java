@@ -51,18 +51,80 @@ public class AdminController {
         return ResponseCode.error("添加失败");
     }
 
-
+    /**
+     * 查询公告列表
+     * @param pageNum
+     * @param pageSize
+     * @param keyStr
+     * @param
+     * @return
+     */
     @GetMapping("/getNoticePage/{pageNum}/{pageSize}")
     public Map<String,Object> getNoticePage(
             @PathVariable("pageNum") Integer pageNum,
             @PathVariable("pageSize") Integer pageSize,
-            String keyStr,
-            HttpServletRequest request){
-        User user = currentUser.currentUser(request);
-        if(user == null) return ResponseCode.error("用户未登录");
+            String keyStr){
 
         PageInfo<Notice> noticePage = adminService.getNoticePage(pageNum, pageSize, keyStr);
         return ResponseCode.ok(noticePage);
+    }
+
+    /**
+     * 停止公告
+     * @param id
+     * @param request
+     * @return
+     */
+    @GetMapping("/stopNotice/{id}")
+    public Map<String,Object> stopNotice(@PathVariable("id") String id,HttpServletRequest request){
+        User user = currentUser.currentUser(request);
+        if(user == null) return ResponseCode.error("用户未登录");
+
+        Integer result = adminService.stopNotice(id);
+
+        return ResponseCode.ok(result > 0 ? true : false);
+    }
+
+    /**
+     * 查询公告
+     * @param id
+     * @param
+     * @return
+     */
+    @GetMapping("/getNotice/{id}")
+    public Map<String,Object> getNotice(@PathVariable("id") String id){
+        Notice notice = adminService.getNotice(id);
+
+        return ResponseCode.ok(notice == null ? "查询失败" : notice);
+    }
+
+    /**
+     * 保存公告修改
+     * @param noticeDesc
+     * @param noticeImg
+     * @param request
+     * @return
+     * @throws IOException
+     * @throws URISyntaxException
+     */
+    @PostMapping("/saveNotice")
+    public Map<String, Object> saveNotice(@RequestParam("noticeDesc") String noticeDesc,@RequestParam(value = "noticeImg",required = false) MultipartFile noticeImg,HttpServletRequest request) throws IOException, URISyntaxException {
+        User user = currentUser.currentUser(request);
+        if(user == null) return ResponseCode.error("用户未登录");
+        String username = user.getUsername();
+//        将json转换成map
+        Map map = objectMapper.readValue(noticeDesc, Map.class);
+        map.put("username", username);
+        if (noticeImg != null) {
+//        将文件上传至腾讯云cos，并获取访问地址
+            String url = UploadUtil.uploadToOos(noticeImg, username, cosConfig);
+            map.put("img", url);
+        }
+
+//        将数据存入数据库
+        boolean result = adminService.saveNotice(map);
+        if (result) return ResponseCode.ok("保存成功");
+        return ResponseCode.error("保存失败");
     }
 
 }

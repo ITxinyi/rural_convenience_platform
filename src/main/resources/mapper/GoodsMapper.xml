@@ -31,7 +31,14 @@
 
   <select id="goodsPage" parameterType="map" resultMap="BaseResultMap">
     select g.*,gi.id gid,gi.goods_id,gi.img1,gi.img2,gi.img3,gi.img4 from goods g left join goods_img gi on g.id = gi.goods_id
-    <include refid="goods_where"></include>
+    <where>
+      <if test="name != null and name != ''">
+        and goods_title like '%${name}%'
+      </if>
+      <if test="state != null and state != ''">
+        and state = #{state}
+      </if>
+    </where>
   </select>
 
   <select id="goodsById" parameterType="Integer" resultMap="BaseResultMap">
@@ -53,5 +60,36 @@
     </foreach>
     )
   </select>
+
+  <update id="saveGoods" parameterType="map">
+    update goods
+    <set>
+      <if test="goodsTitle != null">goods_title = #{goodsTitle},</if>
+      <if test="goodsDesc != null">goods_desc = #{goodsDesc},</if>
+      <if test="price != null">price = #{price},</if>
+      <if test="inventory != null">inventory = #{inventory},</if>
+      <if test="state != null">state = #{state},</if>
+    </set>
+    where id = #{id}
+  </update>
+
+  <update id="updGoodsImg" parameterType="map">
+    update goods_img
+    <set>
+      <if test="img1 != null">img1 = #{img1},</if>
+      <if test="img2 != null">img2 = #{img2},</if>
+      <if test="img3 != null">img3 = #{img3},</if>
+      <if test="img4 != null">img4 = #{img4},</if>
+    </set>
+    where goods_id = #{goodsId}
+  </update>
+
+  <insert id="addGoods" parameterType="com.gy.rural_convenience_platform.entity.Goods" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into goods(goods_title,goods_desc,price,inventory,state) values (#{goodsTitle},#{goodsDesc},#{price},#{inventory},0)
+  </insert>
+
+  <insert id="addGoodsImg" parameterType="map">
+    insert into goods_img(goods_id,img1,img2,img3,img4) values (#{goodsId},#{img1},#{img2},#{img3},#{img4})
+  </insert>
 
 </mapper>

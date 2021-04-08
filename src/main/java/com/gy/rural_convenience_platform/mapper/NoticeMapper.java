@@ -12,4 +12,10 @@ public interface NoticeMapper extends MyMapper<Notice> {
     Integer addNotice(Map map);
 
     List<Notice> getNoticePage(Map<String, Object> map);
+
+    Integer stopNotice(String id);
+
+    Notice getNotice(String id);
+
+    Integer saveNotice(Map map);
 }
