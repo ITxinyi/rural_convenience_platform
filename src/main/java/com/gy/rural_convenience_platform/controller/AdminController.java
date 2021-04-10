@@ -5,6 +5,8 @@ import com.github.pagehelper.PageInfo;
 import com.gy.rural_convenience_platform.config.CosConfig;
 import com.gy.rural_convenience_platform.entity.Notice;
 import com.gy.rural_convenience_platform.entity.User;
+import com.gy.rural_convenience_platform.entity.UserServerOrder;
+import com.gy.rural_convenience_platform.entity.Worker;
 import com.gy.rural_convenience_platform.service.AdminService;
 import com.gy.rural_convenience_platform.utils.CurrentUser;
 import com.gy.rural_convenience_platform.utils.ResponseCode;
@@ -125,6 +127,54 @@ public class AdminController {
         boolean result = adminService.saveNotice(map);
         if (result) return ResponseCode.ok("保存成功");
         return ResponseCode.error("保存失败");
+    }
+
+    /**
+     * 查询所有跑腿信息
+     * @param pageNum
+     * @param pageSize
+     * @param request
+     * @return
+     */
+    @GetMapping("/getWorkers/{pageNum}/{pageSize}")
+    public Map<String,Object> getWorkers(
+            @PathVariable("pageNum") Integer pageNum,
+            @PathVariable("pageSize") Integer pageSize,
+            String keyStr,
+            HttpServletRequest request){
+
+        User user = currentUser.currentUser(request);
+        if (user == null) return ResponseCode.error("用户未登录");
+
+        PageInfo<Worker> pageInfo = adminService.getWorkers(pageNum,pageSize,keyStr);
+        return ResponseCode.ok(pageInfo);
+    }
+
+    /*查询跑腿详细信息*/
+    @GetMapping("/getWorkerById/{id}")
+    public Map<String,Object> getWorkerById(@PathVariable("id") String id,HttpServletRequest request){
+
+        User user = currentUser.currentUser(request);
+        if (user == null) return ResponseCode.error("用户未登录");
+
+        Worker worker = adminService.getWorkerById(id);
+
+        return ResponseCode.ok(worker == null ? "查询失败" : worker);
+    }
+
+    /*审核跑腿账号*/
+    @GetMapping("/subCheck/{id}/{state}")
+    public Map<String,Object> subCheck(
+            @PathVariable("id") String id,
+            @PathVariable("state") String state,
+            HttpServletRequest request){
+
+        User user = currentUser.currentUser(request);
+        if (user == null) return ResponseCode.error("用户未登录");
+
+        boolean result = adminService.subCheck(id,state);
+
+        return result ? ResponseCode.ok("审核完成") : ResponseCode.error("审核失败");
     }
 
 }

@@ -17,6 +17,11 @@ import java.io.UnsupportedEncodingException;
 public class AlipayUtils {
 
     public void pay(OrderInfo orderInfo, HttpServletResponse response) throws AlipayApiException, IOException {
+
+        if ("1".equals(orderInfo.getFlag())) {
+            AlipayConfig.return_url = "http://192.168.31.24:8020/rural_convenience_platform/worker-account.html";
+        }
+
         //获得初始化的AlipayClient
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.gatewayUrl, AlipayConfig.app_id, AlipayConfig.merchant_private_key, "json", AlipayConfig.charset, AlipayConfig.alipay_public_key, AlipayConfig.sign_type);
 

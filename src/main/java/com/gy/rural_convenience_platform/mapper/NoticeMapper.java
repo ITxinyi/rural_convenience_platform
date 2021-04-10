@@ -1,6 +1,7 @@
 package com.gy.rural_convenience_platform.mapper;
 
 import com.gy.rural_convenience_platform.entity.Notice;
+import com.gy.rural_convenience_platform.entity.Worker;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.MyMapper;
 
@@ -18,4 +19,5 @@ public interface NoticeMapper extends MyMapper<Notice> {
     Notice getNotice(String id);
 
     Integer saveNotice(Map map);
+
 }

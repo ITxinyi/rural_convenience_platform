@@ -3,6 +3,7 @@ package com.gy.rural_convenience_platform.controller;
 import com.alipay.api.AlipayApiException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.pagehelper.PageInfo;
 import com.gy.rural_convenience_platform.entity.User;
 import com.gy.rural_convenience_platform.entity.UserServerOrder;
 import com.gy.rural_convenience_platform.service.UserServerService;
@@ -15,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,8 +54,9 @@ public class UserServerController {
     public Map<String, Object> getServerOrderDtl(@PathVariable("orderNum") String orderNum,HttpServletRequest request){
         User user = currentUser.currentUser(request);
         if(user == null) return ResponseCode.error("用户未登录");
-        UserServerOrder[] serverOrder = userServerService.getServerOrderDtl(orderNum,user);
-        return ResponseCode.ok(serverOrder);
+
+        UserServerOrder serverOrders = userServerService.getServerOrderDtl(orderNum);
+        return ResponseCode.ok(serverOrders);
     }
 
     /*支付服务订单*/
@@ -64,11 +67,19 @@ public class UserServerController {
         userServerService.toServerPay(orderNum,user,response);
     }
 
-    @GetMapping("/getServerOrders")
-    public Map<String, Object> getServerOrders(HttpServletRequest request){
+    /**
+     * 查询指定用户的服务订单
+     * @param request
+     * @return
+     */
+    @GetMapping("/getServerOrders/{pageNum}/{pageSize}")
+    public Map<String, Object> getServerOrders(
+            @PathVariable("pageNum") Integer pageNum,
+            @PathVariable("pageSize") Integer pageSize,
+            HttpServletRequest request){
         User user = currentUser.currentUser(request);
         if(user == null) return ResponseCode.error("用户未登录");
-        UserServerOrder[] serverOrders = userServerService.getServerOrderDtl(null, user);
+        PageInfo<UserServerOrder> serverOrders = userServerService.getServerOrder(pageNum, pageSize, user.getId());
         return ResponseCode.ok(serverOrders);
     }
 

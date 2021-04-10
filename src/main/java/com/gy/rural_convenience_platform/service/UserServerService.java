@@ -1,6 +1,8 @@
 package com.gy.rural_convenience_platform.service;
 
 import com.alipay.api.AlipayApiException;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.gy.rural_convenience_platform.entity.OrderInfo;
 import com.gy.rural_convenience_platform.entity.User;
 import com.gy.rural_convenience_platform.entity.UserServerOrder;
@@ -14,6 +16,7 @@ import tk.mybatis.mapper.util.StringUtil;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -45,19 +48,34 @@ public class UserServerService {
         return orderNumber;
     }
 
-    /*查询服务订单详情信息*/
-    public UserServerOrder[] getServerOrderDtl(String orderNum, User user) {
+    /*查询用户服务订单详情信息*/
+    public UserServerOrder getServerOrderDtl(String orderNum) {
         Map<String, Object> map = new HashMap<>();
         if (!StringUtil.isEmpty(orderNum)) {
             map.put("orderNum",orderNum);
         }
-        if (user != null){
-            map.put("userId", user.getId());
-        }
+
         map.put("isDel", 0);
-        UserServerOrder[] serverOrder = userServerOrderMapper.getServerOrderDtl(map);
-        return serverOrder;
+        List<UserServerOrder> serverOrders = userServerOrderMapper.getServerOrderDtl(map);
+        if (serverOrders.size() > 0) {
+            return serverOrders.get(0);
+        }
+        return null;
     }
+
+    /**
+     * 根据订单号查询服务订单信息
+     * @param orderNum
+     * @return
+     */
+//    public UserServerOrder getServerOrderDtl(String orderNum) {
+//        Map<String, Object> map = new HashMap<>();
+//        if (!StringUtil.isEmpty(orderNum)) {
+//            map.put("orderNum",orderNum);
+//        }
+//        UserServerOrder[] serverOrder = userServerOrderMapper.getServerOrderDtl(map);
+//        return (serverOrder.length == 1) ? serverOrder[0] : null;
+//    }
 
     /*支付服务订单*/
     public void toServerPay(String orderNum, User user, HttpServletResponse response) throws IOException, AlipayApiException {
@@ -66,8 +84,8 @@ public class UserServerService {
         map.put("userId", user.getId());
         map.put("isDel", 0);
         /*获取订单信息*/
-        UserServerOrder[] orderDtl = userServerOrderMapper.getServerOrderDtl(map);
-        UserServerOrder serverOrder = orderDtl[0];
+        List<UserServerOrder> serverOrderDtl = userServerOrderMapper.getServerOrderDtl(map);
+        UserServerOrder serverOrder = serverOrderDtl.get(0);
         /*订单还未支付*/
         if(serverOrder.getPayState() == 0){
             String price = serverOrder.getPrice() + "";
@@ -82,5 +100,28 @@ public class UserServerService {
     /*更新服务订单支付状态*/
     public void updServerOrderState(String orderNum) {
         userServerOrderMapper.updServerOrderState(orderNum);
+    }
+
+    /**
+     * 查询用户服务订单列表
+     * @param pageNum
+     * @param pageSize
+     * @param id
+     * @return
+     */
+    public PageInfo<UserServerOrder> getServerOrder(Integer pageNum, Integer pageSize, Integer id) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("isDel", 0);
+
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<UserServerOrder> orderDtls = userServerOrderMapper.getServerOrderDtl(map);
+
+        PageInfo<UserServerOrder> pageInfo = new PageInfo<>(orderDtls);
+
+        return pageInfo;
+
     }
 }

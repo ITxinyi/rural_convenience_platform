@@ -3,14 +3,13 @@ package com.gy.rural_convenience_platform.controller;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.internal.util.AlipaySignature;
 import com.gy.rural_convenience_platform.config.AlipayConfig;
-import com.gy.rural_convenience_platform.entity.Cart;
-import com.gy.rural_convenience_platform.entity.User;
-import com.gy.rural_convenience_platform.entity.UserGoodsOrder;
-import com.gy.rural_convenience_platform.entity.UserServerOrder;
+import com.gy.rural_convenience_platform.entity.*;
 import com.gy.rural_convenience_platform.service.CheckOutService;
 import com.gy.rural_convenience_platform.service.UserGoodsOrderService;
 import com.gy.rural_convenience_platform.service.UserServerService;
+import com.gy.rural_convenience_platform.service.WorkerService;
 import com.gy.rural_convenience_platform.utils.CurrentUser;
+import com.gy.rural_convenience_platform.utils.RedisUtil;
 import com.gy.rural_convenience_platform.utils.ResponseCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,6 +37,10 @@ public class CheckOutController {
     private UserGoodsOrderService userGoodsOrderService;
     @Autowired
     private UserServerService userServerService;
+    @Autowired
+    private WorkerService workerService;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @RequestMapping("/checkOutGoods")
     public Map<String, Object> getCheckOutGoods(String ids, HttpServletRequest request) {
@@ -120,14 +123,27 @@ public class CheckOutController {
                     if(goodsOrder.getPayState() == 0){
                         userGoodsOrderService.updatePayState(out_trade_no);
                     }
-                }
+                }else{
+                    /*如果是服务订单*/
+                    UserServerOrder serverOrder = userServerService.getServerOrderDtl(out_trade_no);
+                    if (serverOrder != null) {
+                        if (serverOrder.getPayState() == 0) {
+                            userServerService.updServerOrderState(out_trade_no);
+                        }
+                    }else{
+                        Map<String,Object> map = new HashMap<>();
+                        map.put("depositOrdNum", out_trade_no);
+                        Worker _worker = workerService.queryWorker(map);
+                        if (_worker != null) {
+                            map.put("workerId", _worker.getId());
+                            map.put("deposit", 500);
+                            workerService.updWorker(map);
 
-                /*如果是服务订单*/
-                UserServerOrder[] serverOrderDtl = userServerService.getServerOrderDtl(out_trade_no, null);
-                UserServerOrder serverOrder = serverOrderDtl[0];
-                if (serverOrder != null) {
-                    if (serverOrder.getPayState() == 0) {
-                        userServerService.updServerOrderState(out_trade_no);
+                            Worker worker = workerService.queryWorker(map);
+
+                            String s = request.getSession().getId();
+                            redisUtil.set(request.getSession().getId(), worker);
+                        }
                     }
                 }
                 //注意：

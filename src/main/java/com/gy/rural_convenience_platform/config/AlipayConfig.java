@@ -46,8 +46,7 @@ public class AlipayConfig {
     // 支付宝网关
     public static String log_path = "E:\\Users\\dell\\workspace2020\\青软实训\\rural_convenience_platform\\log";
 
-
-//↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+    //↑↑↑↑↑↑↑↑↑↑请在这里配置您的基本信息↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
     /**
      * 写日志，方便测试（看网站需求，也可以改成把记录存入数据库）

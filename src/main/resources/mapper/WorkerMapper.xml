@@ -15,5 +15,143 @@
     <result column="deposit" jdbcType="VARCHAR" property="deposit" />
     <result column="income" jdbcType="VARCHAR" property="income" />
     <result column="state" jdbcType="INTEGER" property="state" />
+      <result column="deposit_ord_num" jdbcType="VARCHAR" property="depositOrdNum" />
   </resultMap>
+
+    <resultMap id="WorkerMap" type="com.gy.rural_convenience_platform.entity.Worker">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="username" jdbcType="VARCHAR" property="username" />
+        <result column="password" jdbcType="VARCHAR" property="password" />
+        <result column="id_card" jdbcType="VARCHAR" property="idCard" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="age" jdbcType="INTEGER" property="age" />
+        <result column="deposit" jdbcType="VARCHAR" property="deposit" />
+        <result column="income" jdbcType="VARCHAR" property="income" />
+        <result column="state" jdbcType="INTEGER" property="state" />
+        <result column="deposit_ord_num" jdbcType="VARCHAR" property="depositOrdNum" />
+        <association property="idcardImg" column="wkid" javaType="com.gy.rural_convenience_platform.entity.IdcardImg">
+            <id column="iid" jdbcType="INTEGER" property="id" />
+            <result column="worker_id" jdbcType="VARCHAR" property="workerId" />
+            <result column="id_img1" jdbcType="VARCHAR" property="idImg1" />
+            <result column="id_img2" jdbcType="VARCHAR" property="idImg2" />
+        </association>
+    </resultMap>
+
+
+  <insert id="insertWorker" parameterType="com.gy.rural_convenience_platform.entity.Worker" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    insert into worker(name,username,password,id_card,sex,age,deposit,income,state)
+    values(#{name},#{username},#{password},#{idCard},#{sex},#{age},0,0,0)
+  </insert>
+
+  <insert id="insertWorkerImg" parameterType="map">
+    insert into idcard_img(worker_id,id_img1,id_img2)
+    values (#{id},#{img1},#{img2})
+  </insert>
+
+    <select id="queryWorker" parameterType="map" resultMap="BaseResultMap">
+        select
+            id,
+            name,
+            username,
+            password,
+            id_card,
+            sex,
+            age,
+            deposit,
+            income,
+            state,
+            deposit_ord_num
+        from worker
+        <where>
+          <if test="id != null">
+            and id = #{id}
+          </if>
+          <if test="name != null">
+            and name like '%${name}%'
+          </if>
+          <if test="username != null">
+            and username = #{username}
+          </if>
+          <if test="password != null">
+            and password = #{password}
+          </if>
+          <if test="depositOrdNum != null">
+              and deposit_ord_num = #{depositOrdNum}
+          </if>
+        </where>
+
+    </select>
+
+    <insert id="takeOrders" parameterType="map">
+        insert into worker_order(worker_id,user_server_order_id) values (#{workerId},#{serverId})
+    </insert>
+
+    <update id="updWorker" parameterType="map">
+        update worker
+        <set>
+            <if test="newPwd != null">
+                password = #{newPwd},
+            </if>
+            <if test="deposit != null">
+                deposit = #{deposit},
+            </if>
+            <if test="income != null">
+                income = (income + #{income}),
+            </if>
+            <if test="depositOrdNum != null">
+                deposit_ord_num = #{depositOrdNum},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+        </set>
+        where id = #{workerId}
+    </update>
+
+    <select id="getWorkers" parameterType="map" resultMap="BaseResultMap">
+        select
+        id,
+        name,
+        username,
+        password,
+        id_card,
+        sex,
+        age,
+        deposit,
+        income,
+        state,
+        deposit_ord_num
+        from worker
+        <where>
+            <if test="name != null">
+                and name like '%${name}%'
+            </if>
+        </where>
+    </select>
+
+    <select id="getWorkerById" parameterType="map" resultMap="WorkerMap">
+        select
+            t1.id,
+            t1.name,
+            t1.username,
+            t1.password,
+            t1.id_card,
+            t1.sex,
+            t1.age,
+            t1.deposit,
+            t1.income,
+            t1.state,
+            t1.deposit_ord_num,
+            t2.id iid,
+            t2.worker_id wkid,
+            t2.id_img1,
+            t2.id_img2
+             from worker t1,idcard_img t2
+             where t1.id = t2.worker_id and t1.id = #{id}
+    </select>
+
 </mapper>

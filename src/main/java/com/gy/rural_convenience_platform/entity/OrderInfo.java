@@ -9,6 +9,8 @@ public class OrderInfo {
     /*付款内容*/
     private String subject;
 
+    private String flag;
+
     public OrderInfo() {
     }
 
@@ -16,6 +18,14 @@ public class OrderInfo {
         this.outTradeNo = outTradeNo;
         this.totalAmount = totalAmount;
         this.subject = subject;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
     }
 
     public String getOutTradeNo() {

@@ -3,7 +3,9 @@ package com.gy.rural_convenience_platform.service;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.gy.rural_convenience_platform.entity.Notice;
+import com.gy.rural_convenience_platform.entity.Worker;
 import com.gy.rural_convenience_platform.mapper.NoticeMapper;
+import com.gy.rural_convenience_platform.mapper.WorkerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.util.StringUtil;
@@ -17,6 +19,8 @@ public class AdminService {
 
     @Autowired
     private NoticeMapper noticeMapper;
+    @Autowired
+    private WorkerMapper workerMapper;
 
     /**
      * 添加公告
@@ -89,5 +93,46 @@ public class AdminService {
         Integer result = noticeMapper.saveNotice(map);
         if (result > 0) return true;
         return false;
+    }
+
+    /**
+     * 查询所有跑腿信息
+     *
+     * @param pageNum
+     * @param pageSize
+     * @param key
+     * @return
+     */
+    public PageInfo<Worker> getWorkers(Integer pageNum, Integer pageSize, String key) {
+
+        Map<String, Object> map = new HashMap<>();
+        if(!StringUtil.isEmpty(key)){
+            map.put("name", key);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Worker> list = workerMapper.getWorkers(map);
+        PageInfo<Worker> workerPageInfo = new PageInfo<>(list);
+
+        return workerPageInfo;
+    }
+
+    public Worker getWorkerById(String id) {
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+
+        return workerMapper.getWorkerById(map);
+
+    }
+
+    /*跑腿账号审核*/
+    public boolean subCheck(String id, String state) {
+
+        Map<String, String> map = new HashMap<>();
+        map.put("workerId", id);
+        map.put("state", state);
+        Integer result = workerMapper.updWorker(map);
+
+        return (result > 0) ? true : false;
     }
 }

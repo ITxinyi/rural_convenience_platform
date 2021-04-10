@@ -55,6 +55,32 @@ public class Worker {
     private Integer state;
 
     /**
+     * 押金充值订单号
+     */
+    private String depositOrdNum;
+
+    /**
+     * 证件图片
+     */
+    private IdcardImg idcardImg;
+
+    public IdcardImg getIdcardImg() {
+        return idcardImg;
+    }
+
+    public void setIdcardImg(IdcardImg idcardImg) {
+        this.idcardImg = idcardImg;
+    }
+
+    public String getDepositOrdNum() {
+        return depositOrdNum;
+    }
+
+    public void setDepositOrdNum(String depositOrdNum) {
+        this.depositOrdNum = depositOrdNum;
+    }
+
+    /**
      * @return id
      */
     public Integer getId() {

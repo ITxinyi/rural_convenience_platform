@@ -94,11 +94,50 @@
             <if test="orderNum != null">
                 and order_num = #{orderNum}
             </if>
+            <if test="orderState != null">
+                and order_state = #{orderState}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
         </where>
     </select>
 
     <update id="updServerOrderState" parameterType="string">
         update user_server_order set pay_state = 1 where order_num = #{orderNum}
     </update>
+
+    <update id="updServerOrder" parameterType="map">
+        update user_server_order
+        <set>
+            <if test="orderState != null">
+                order_state = #{orderState}
+            </if>
+        </set>
+        where id = #{serverId}
+    </update>
+
+    <select id="getCompleteList" parameterType="map" resultMap="BaseResultMap">
+        select
+           s.id
+          ,s.user_id
+          ,s.type
+          ,s.goods
+          ,s.begin_addr
+          ,s.begin_addr_desc
+          ,s.begin_phone
+          ,s.end_addr
+          ,s.end_addr_desc
+          ,s.end_phone
+          ,s.distance
+          ,s.price
+          ,s.order_num
+          ,s.remarks
+          ,s.order_state
+          ,s.pay_state
+          ,s.is_del
+        from user_server_order s left join worker_order w on s.id = w.user_server_order_id
+        where w.worker_id = #{workerId}
+    </select>
 
 </mapper>
