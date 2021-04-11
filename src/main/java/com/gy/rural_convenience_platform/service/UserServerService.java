@@ -112,7 +112,7 @@ public class UserServerService {
     public PageInfo<UserServerOrder> getServerOrder(Integer pageNum, Integer pageSize, Integer id) {
 
         Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
+        map.put("userId", id);
         map.put("isDel", 0);
 
         PageHelper.startPage(pageNum, pageSize);

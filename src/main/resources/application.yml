@@ -4,6 +4,9 @@ server:
 logging:
   file:
     name: log/log.log
+  level:
+    com.gy.rural_convenience_platform.mapper : debug
+
 
 spring:
   datasource:
