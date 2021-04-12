@@ -189,7 +189,7 @@ public class WorkerController {
         Worker worker = currentUser.currUser(request);
         if (worker == null) return ResponseCode.error("用户未登录");
 
-        boolean result = workerService.doDelivery(id);
+        boolean result = workerService.doDelivery(id,worker);
         return result ? ResponseCode.ok("送达成功") : ResponseCode.error("送达失败");
     }
 

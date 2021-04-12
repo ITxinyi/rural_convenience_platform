@@ -100,7 +100,7 @@
                 deposit = #{deposit},
             </if>
             <if test="income != null">
-                income = (income + #{income}),
+                income = #{income},
             </if>
             <if test="depositOrdNum != null">
                 deposit_ord_num = #{depositOrdNum},
@@ -150,8 +150,8 @@
             t2.worker_id wkid,
             t2.id_img1,
             t2.id_img2
-             from worker t1,idcard_img t2
-             where t1.id = t2.worker_id and t1.id = #{id}
+             from worker t1 LEFT JOIN idcard_img t2 ON t1.id = t2.worker_id
+             where t1.id = #{id}
     </select>
 
 </mapper>

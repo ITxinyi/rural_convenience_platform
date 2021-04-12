@@ -21,6 +21,7 @@ import tk.mybatis.mapper.util.StringUtil;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -98,8 +99,12 @@ public class WorkerService {
     public PageInfo<UserServerOrder> getIncompleteList(Integer pageNum, Integer pageSize) {
 
         Map<String, Object> map = new HashMap<>();
+        /*未删除*/
         map.put("isDel", 0);
+        /*未接单*/
         map.put("orderState", 0);
+        /*已支付*/
+        map.put("payState", 1);
 
         PageHelper.startPage(pageNum, pageSize);
 
@@ -242,11 +247,17 @@ public class WorkerService {
 
     }
 
-    /*修改订单状态*/
-    public boolean doDelivery(Integer id) {
+    /**
+     * 修改订单状态
+     * @param id 服务订单id
+     * @param _worker
+     * @return
+     */
+    public boolean doDelivery(Integer id, Worker _worker) {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
 
+        /*根据id查询服务订单*/
         List<UserServerOrder> orderDtl = userServerOrderMapper.getServerOrderDtl(map);
         if (orderDtl != null) {
             /*修改订单状态*/
@@ -255,12 +266,24 @@ public class WorkerService {
             Integer result = userServerOrderMapper.updServerOrder(map);
         }
         /*修改跑腿收入*/
+        String workerId = _worker.getId().toString();
+        map.put("id", workerId);
+        /*查询跑腿信息*/
+        Worker worker = workerMapper.getWorkerById(map);
+        /*获取订单信息*/
         UserServerOrder serverOrder = orderDtl.get(0);
+        /*计算收入*/
+        String income = worker.getIncome();
+        String price = serverOrder.getPrice()+"";
+        BigDecimal bd1 = new BigDecimal(income);
+        BigDecimal bd2 = new BigDecimal(price);
+        income = bd1.add(bd2).toString();
+        /*执行修改*/
         Map<String, String> tempMap = new HashMap<>();
-        tempMap.put("workerId", id+"");
-        tempMap.put("income", serverOrder.getPrice()+"");
+        tempMap.put("workerId", workerId);
+        tempMap.put("income", income);
         Integer result = workerMapper.updWorker(tempMap);
-
+        /*返回结果*/
         return (result > 0) ? true : false;
     }
 }
