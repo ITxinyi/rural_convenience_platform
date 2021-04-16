@@ -74,7 +74,7 @@
   </select>
 
   <select id="getUserGoodsOrders" parameterType="int" resultMap="Orders">
-    select ugo.*,gi.* from user_goods_order ugo,goods_img gi where ugo.user_id = #{userId} and gi.id = (select goods_id from order_goods where ugo_id = ugo.id limit 1)
+    select ugo.*,gi.* from user_goods_order ugo,goods_img gi where ugo.user_id = #{userId} and gi.goods_id = (select t1.goods_id from order_goods t1 where t1.ugo_id = ugo.id limit 1)
   </select>
 
   <select id="getOrderByOrderNum" parameterType="string" resultMap="BaseResultMap">

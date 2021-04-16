@@ -65,9 +65,10 @@ public class AdminController {
     public Map<String,Object> getNoticePage(
             @PathVariable("pageNum") Integer pageNum,
             @PathVariable("pageSize") Integer pageSize,
-            String keyStr){
+            @RequestParam("keyStr") String keyStr,
+            @RequestParam(value = "isDel",required = false) String isDel){
 
-        PageInfo<Notice> noticePage = adminService.getNoticePage(pageNum, pageSize, keyStr);
+        PageInfo<Notice> noticePage = adminService.getNoticePage(pageNum, pageSize, keyStr,isDel);
         return ResponseCode.ok(noticePage);
     }
 

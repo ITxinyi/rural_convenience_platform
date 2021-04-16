@@ -31,6 +31,9 @@
     FROM
         notice
     <where>
+        <if test="isDel != null">
+            and is_del = #{isDel}
+        </if>
         <if test="title != null">
             and title like '%${title}%'
         </if>

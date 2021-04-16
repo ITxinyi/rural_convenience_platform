@@ -139,10 +139,10 @@ public class CheckOutController {
                             map.put("deposit", 500);
                             workerService.updWorker(map);
 
-                            Worker worker = workerService.queryWorker(map);
-
-                            String s = request.getSession().getId();
-                            redisUtil.set(request.getSession().getId(), worker);
+//                            Worker worker = workerService.queryWorker(map);
+//
+//                            String s = request.getSession().getId();
+//                            redisUtil.set(request.getSession().getId(), worker);
                         }
                     }
                 }

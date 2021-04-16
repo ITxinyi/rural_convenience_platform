@@ -39,14 +39,18 @@ public class AdminService {
      * 查询公告列表
      * @param pageNum
      * @param pageSize
+     * @param isDel
      * @param key
      * @return
      */
-    public PageInfo<Notice> getNoticePage(Integer pageNum, Integer pageSize, String key) {
+    public PageInfo<Notice> getNoticePage(Integer pageNum, Integer pageSize, String key, String isDel) {
 
         Map<String, Object> map = new HashMap<>();
         if(!StringUtil.isEmpty(key)){
             map.put("title", key);
+        }
+        if(!StringUtil.isEmpty(isDel)){
+            map.put("isDel", isDel);
         }
         map.put("startIndex", (pageNum-1)*pageSize);
         map.put("pageSize", pageSize);
